@@ -6,15 +6,37 @@ function Login() {
   const navigate = useNavigate();
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
+  const [passwordError,setPasswordError] = useState("");
+
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    // regex
+    const strongPswd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // validate
+    if(!strongPswd.test(value)){
+      setPasswordError("Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.");
+    }else{
+      setPasswordError("")
+    }
+  };
+
+
 
   const loginData = async (e) => {
     e.preventDefault();
 
     try{
-      const Data = await axios.post('http://localhost:3000/api/login',{email,password})
-      // =======
-    }catch(err){}
-  }
+      const Data = await axios.post('http://localhost:3000/api/user-login',{email,password})
+      alert("successfully login");
+    }catch(err){
+      console.error("Login failed",err)
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="flex flex-col md:flex-row max-w-4xl w-full overflow-hidden gap-4 md:gap-8">
@@ -61,22 +83,28 @@ function Login() {
                 type="password"
                 id="password"
                 name="password"
-                onChange={(e)=>setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 value={password}
                 placeholder="Password"
                 className="w-full px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-200"
               />
+
+              {/* password Error msg */}
+              {password && (
+                <p className='text-red-500 text-sm mt-1'>{passwordError}</p>
+              )}
             </div>
 
             <div className="w-full max-w-xs">
               <button
                 type="submit"
+                disabled={!!passwordError}
                 className="w-full py-2 md:py-3 rounded-full text-white font-semibold
                   bg-gradient-to-r from-teal-400 to-purple-500
                   hover:from-teal-500 hover:to-purple-600
                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300"
               >
-                Create Account
+                Login
               </button>
             </div>
           </form>
