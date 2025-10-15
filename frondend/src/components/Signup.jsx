@@ -36,7 +36,12 @@ function Signup() {
       const response = await axios.post(`http://localhost:3000/api/signup`, { name, email, password });
       console.log(response);
 
-      if (response) navigate('/login')
+      if (response) {
+        //  Store email temporarily
+        sessionStorage.setItem("userEmail", email);
+
+        // Navigate to OTP verification page
+        navigate("/verify-otp");}
     } catch (err) {
       console.error("Registration failed:", err);
     }
