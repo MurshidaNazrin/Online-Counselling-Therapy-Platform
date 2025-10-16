@@ -5,7 +5,7 @@ import Howitworks from './subcomponents/Howitworks';
 import Courses from './subcomponents/Courses';
 import Reviews from './subcomponents/Reviews';
 import Footer from './subcomponents/Footer';
-import OTPverification from './OTPverification';
+
 
 
 function Index() {
@@ -17,7 +17,6 @@ function Index() {
       <Howitworks />
       <Reviews />
       <Footer />
-      <OTPverification />
     </div>
   )
 }

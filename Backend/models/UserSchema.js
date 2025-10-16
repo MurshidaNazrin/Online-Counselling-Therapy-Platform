@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
     name: { type: String, required: [true, "Name is required"], trim: true },
     email: { type: String, required: [true, "Email is required"], unique: true, lowercase: true, trim: true, validate: [validator.isEmail, "Invalid email format"] },
     password: { type: String, required: [true, "Password is required"], minlength: 8 }, 
-    // role: { type: String, enum: ["Client", "Therapist", "Admin"], default: "Client", required: true },
+    role: { type: String, default: 'client', enum: ["client"]},
     // profileImage: { type: String, default: null },
 
 

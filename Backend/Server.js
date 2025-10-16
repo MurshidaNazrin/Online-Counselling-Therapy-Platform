@@ -5,6 +5,7 @@ import cron from "node-cron";
 import Connection from "./Connection.js";
 import router from "./router.js";
 import User from "./models/UserSchema.js";
+import Therapist from "./models/TherapistSchema.js";
 dotenv.config()
 
 const port = process.env.PORT;

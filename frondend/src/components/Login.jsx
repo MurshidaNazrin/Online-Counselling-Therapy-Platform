@@ -24,12 +24,13 @@ function Login() {
   };
 
 
-
   const loginData = async (e) => {
     e.preventDefault();
 
     try{
-      const Data = await axios.post('http://localhost:3000/api/user-login',{email,password})
+      const Data = await axios.post('http://localhost:3000/api/user-login',{email,password});
+      console.log(Data);
+      
       alert("successfully login");
     }catch(err){
       console.error("Login failed",err)

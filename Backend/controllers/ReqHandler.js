@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
-import User from "./models/UserSchema.js";
-import { sendEmail } from "./utils/sendEmail.js";
+import User from "../models/UserSchema.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import jwt from "jsonwebtoken";
 
 
 // ==================signup================================
@@ -33,7 +34,7 @@ export async function signup(req, res) {
     const otp = Math.floor(100000 + Math.random() * 900000);
     const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); //valid for 5mins
 
-    const newUser = await User.create({ name, email, password: hpass, isVerified: false, otp, otpExpires: otpExpiry, });
+    const newUser = await User.create({ name, email, password: hpass, role: 'client', isVerified: false, otp, otpExpires: otpExpiry, });
 
     //Send OTP email
     const subject = "Verify Your account - Online Counselling Platform";
@@ -143,9 +144,11 @@ export async function login(req,res){
     }
 
     // generate JWT
+    const token = jwt.sign({clientId: user._id, role:user.role}, process.env.JWT_TOKEN,{ expiresIn: "24h"});
+    console.log(token);
+    
 
-
-    return res.status(200).json({message:"Login successful",user})
+    return res.status(200).json({message:"Login successful",token,user})
   }catch(err){
     console.error("Login Error:",err);
     res.status(500).json({message:"Server error"});
