@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 
-function Signup() {
+function TpstSignup() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -33,7 +33,7 @@ function Signup() {
   const createAcnt = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:3000/api/signup`, { name, email, password });
+      const response = await axios.post(`http://localhost:3000/api/therapist-signup`, { name, email, password });
       console.log(response);
 
       if (response) {
@@ -41,7 +41,7 @@ function Signup() {
         sessionStorage.setItem("userEmail", email);
 
         // Navigate to OTP verification page
-        navigate("/verify-otp");
+        navigate("/therapist-otp");
       }
     } catch (err) {
       console.error("Registration failed:", err);
@@ -145,4 +145,5 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default TpstSignup;
+
