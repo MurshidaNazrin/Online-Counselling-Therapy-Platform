@@ -7,7 +7,7 @@ const { verify } = pkg;
 export default function Auth(allowedRoles = []) {
     return function (req, res, next) {
     try{
-        const key = req.headers.autherization;
+        const key = req.headers.authorization;
         if(!key){
             return res.status(401).send("Unautherized access: No token provided");
         }

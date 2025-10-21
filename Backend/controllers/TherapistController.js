@@ -16,7 +16,7 @@ export async function signup(req, res) {
     // password strength validation
     const strongPswd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-     if (!strongPswd.test(password)) {
+    if (!strongPswd.test(password)) {
       return res.status(400).json({
         message:
           "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
@@ -114,43 +114,98 @@ export async function resendOTP(req, res) {
     console.error("Resend OTP Error:", err);
     res.status(500).json({ message: "Server error" });
   }
-} 
+}
 
 
 // ====================Login===========================
-export async function login(req,res){
-  try{
-    const {email,password} = req.body;
+export async function login(req, res) {
+  try {
+    const { email, password } = req.body;
 
-    if(!email || !password) {
-      return res.status(400).json({message: "Please enter email and password"});
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter email and password" });
     }
 
     // find user
-    const therapist = await Therapist.findOne({email});
-    if(!therapist){
-      return res.status(400).json({message:"Invalid email or password"});
+    const therapist = await Therapist.findOne({ email });
+    if (!therapist) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // check if verified
-    if(!therapist.isVerified){
-      return res.status(403).json({message: "Email not verified.Please verify Your email before login"});
+    if (!therapist.isVerified) {
+      return res.status(403).json({ message: "Email not verified.Please verify Your email before login" });
     }
 
     // compare password
-    const isMatch = await bcrypt.compare(password,therapist.password);
-    if(!isMatch){
-      return res.status(400).json({message:"Invalid email or password"});
+    const isMatch = await bcrypt.compare(password, therapist.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // generate JWT
-    const token = jwt.sign({clientId: therapist._id, role:therapist.role}, process.env.JWT_TOKEN,{ expiresIn: "24h"});
+    const token = jwt.sign({ therapistId: therapist._id, role: therapist.role }, process.env.JWT_TOKEN, { expiresIn: "24h" });
     console.log(token);
+
+
+    return res.status(200).json({ message: "Login successful", token, therapist })
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+// ================Setup/Update Therapist Profile=======================
+export async function therapistProfile(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+    console.log(therapistId);
+    const { profileImage,
+      profession,
+      qualifications,
+      specialization,
+      experience,
+      certificate,
+      bio
+    } = req.body;
+
+    const therapist = await Therapist.findById(therapistId);
+    if (!therapist) {
+      return res.status(404).json({ message: "Therapist not found!!" });
+    }
+
+    if (!therapist.isVerified) {
+      return res.status(403).json({ message: "Email is not Verified, Cannot update Profile." });
+    }
+
+    const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, { profileImage, profession, qualifications, specialization, experience, certificate, bio });
+    if (tpstDetails) {
+      return res.status(200).json({ message: "Profile updated Successfully", tpstDetails })
+    }
+
+  } catch (err) {
+    console.error("Profile setup error:", err);
+    res.status(500).json({ message: "Server Error" })
+  }
+}
+
+
+// =========Get/show Therapist profile=======================
+export async function getTherapistProfile(req, res) {
+  try {
+     const therapistId = req.user.therapistId;
+    console.log(therapistId);
     
 
-    return res.status(200).json({message:"Login successful",token,therapist})
-  }catch(err){
-    console.error("Login Error:",err);
-    res.status(500).json({message:"Server error"});
+     const getTherapist = await Therapist.findById(therapistId).select("-password -otp -otpExpires");
+    if (!getTherapist) {
+      return res.status(404).json({ message: "Therapist not found!!" });
+    }
+
+    res.status(200).json({ success: true, therapist: getTherapist });
+  } catch (err) {
+    console.error("Profile fetch error:", err);
+    res.status(500).json({ message: "Server Error" })
   }
 }
