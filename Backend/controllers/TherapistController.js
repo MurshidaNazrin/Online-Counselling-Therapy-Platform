@@ -194,11 +194,9 @@ export async function therapistProfile(req, res) {
 // =========Get/show Therapist profile=======================
 export async function getTherapistProfile(req, res) {
   try {
-     const therapistId = req.user.therapistId;
-    console.log(therapistId);
-    
+    const therapistId = req.user.therapistId;
 
-     const getTherapist = await Therapist.findById(therapistId).select("-password -otp -otpExpires");
+    const getTherapist = await Therapist.findById(therapistId).select("-password -otp -otpExpires");
     if (!getTherapist) {
       return res.status(404).json({ message: "Therapist not found!!" });
     }
@@ -207,5 +205,20 @@ export async function getTherapistProfile(req, res) {
   } catch (err) {
     console.error("Profile fetch error:", err);
     res.status(500).json({ message: "Server Error" })
+  }
+}
+
+// ===================delete profile/Account=========================
+export async function deleteAccount(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+    const deleteAccount = await Therapist.findByIdAndDelete(therapistId);
+    if (!deleteAccount) {
+      return res.status(404).json({ success: false, message: 'Therapist not found' });
+    }
+    return res.status(200).json({ success: true, message: "Account delete successfully." })
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 }

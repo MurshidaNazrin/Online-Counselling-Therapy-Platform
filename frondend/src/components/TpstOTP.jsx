@@ -57,7 +57,7 @@ function TpstOTP() {
 
       setTimeout(() => {
         sessionStorage.removeItem("userEmail"); //  clear after success
-        navigate("/login");
+        navigate('/therapist-login');
       }, 2000);
     } catch (err) {
       setMessage(err.response?.data?.message || "Verification failed.");

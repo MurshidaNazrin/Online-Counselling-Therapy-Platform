@@ -6,6 +6,7 @@ import OTPverification from './components/OTPverification';
 import TpstLogin from './components/TpstLogin';
 import TpstSignup from './components/TpstSignup';
 import TpstOTP from './components/TpstOTP';
+import Tpstindex from './components/Tpstindex';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
          <Route path='/therapist-login' element={<TpstLogin />}/>
          <Route path='/therapist-signup' element={<TpstSignup />} />
          <Route path='/therapist-otp' element={<TpstOTP />} />
+         <Route path='/therapist-Home' element={<Tpstindex />} />
        </Routes>
     </BrowserRouter>
       {/* <Signup /> */}

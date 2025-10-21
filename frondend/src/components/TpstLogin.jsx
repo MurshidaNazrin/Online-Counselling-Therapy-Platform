@@ -30,8 +30,8 @@ function TpstLogin() {
         try {
             const Data = await axios.post('http://localhost:3000/api/therapist-login', { email, password });
             console.log(Data);
-
-            alert("successfully login");
+            localStorage.setItem("token",Data.data.token)
+            navigate('/therapist-Home');
         } catch (err) {
             console.error("Login failed", err)
         }

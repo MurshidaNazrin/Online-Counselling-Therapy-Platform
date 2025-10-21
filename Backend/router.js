@@ -16,7 +16,7 @@ router.route('/therapist-verify-otp').post(tp.verifyOtp);
 router.route('/therapist-resend-otp').post(tp.resendOTP);
 router.route('/therapist-login').post(tp.login);
 
-router.route('/therapist-createprofile').post(Auth(["therapist"]),tp.therapistProfile);
+router.route('/therapist-createprofile').put(Auth(["therapist"]),tp.therapistProfile);
 router.route('/therapist-profile').get(Auth(["therapist"]),tp.getTherapistProfile);
-
+router.route('/therapist-deleteprofile').delete(Auth(["therapist"]),tp.deleteAccount);
 export default router
