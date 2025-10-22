@@ -17,6 +17,7 @@ app.use(cors())
 
 // routes
 app.use('/api', router)
+app.use('/uploads',express.static('uploads'))
 
 // connect DB and start Server
 Connection().then(() => {
@@ -37,7 +38,7 @@ Connection().then(() => {
             }
         });
 
-        // console.log("✅ Cron job scheduled: Running every 1 minute");
+        // console.log(" Cron job scheduled: Running every 1 minute");
 
     })
 }).catch((err) => {

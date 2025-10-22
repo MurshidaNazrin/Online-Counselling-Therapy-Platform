@@ -160,8 +160,9 @@ export async function login(req, res) {
 export async function therapistProfile(req, res) {
   try {
     const therapistId = req.user.therapistId;
-    console.log(therapistId);
-    const { profileImage,
+    // console.log(therapistId);
+
+    const { 
       profession,
       qualifications,
       specialization,
@@ -169,6 +170,8 @@ export async function therapistProfile(req, res) {
       certificate,
       bio
     } = req.body;
+
+    const profileImage = req.file ? `/uploads/${req.file.filename}` : undefined;
 
     const therapist = await Therapist.findById(therapistId);
     if (!therapist) {
@@ -179,7 +182,19 @@ export async function therapistProfile(req, res) {
       return res.status(403).json({ message: "Email is not Verified, Cannot update Profile." });
     }
 
-    const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, { profileImage, profession, qualifications, specialization, experience, certificate, bio });
+    const updateData = {
+      profession,
+      qualifications,
+      specialization: specialization ? JSON.parse(specialization) :therapist.specialization,
+      experience,
+      certificate,
+      bio,
+    };
+
+    // Add image only if new one uploaded
+    if(profileImage) updateData.profileImage = profileImage;
+
+    const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, updateData, {new: true});
     if (tpstDetails) {
       return res.status(200).json({ message: "Profile updated Successfully", tpstDetails })
     }
