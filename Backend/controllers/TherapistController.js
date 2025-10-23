@@ -171,8 +171,8 @@ export async function therapistProfile(req, res) {
       bio
     } = req.body;
 
-    const profileImage = req.files?.profileImage ? `/uploads/${req.files.profileImage[0].filename}` : undefined;
-    const uploadedCertificate = req.files.certificate ? `/uploads/${req.files.certificate[0].filename}` : undefined;
+    const profileImage = req.files?.profileImage ? `/uploads/profileImages/${req.files.profileImage[0].filename}` : undefined;
+    const uploadedCertificate = req.files.certificate ? `/uploads/certificates/${req.files.certificate[0].filename}` : undefined;
 
     const therapist = await Therapist.findById(therapistId);
     if (!therapist) {
@@ -222,6 +222,15 @@ export async function getTherapistProfile(req, res) {
     const getTherapist = await Therapist.findById(therapistId).select("-password -otp -otpExpires");
     if (!getTherapist) {
       return res.status(404).json({ message: "Therapist not found!!" });
+    }
+
+    // Add full URLs for images
+    const host = `${req.protocol}://${req.get("host")}`;
+    if (getTherapist.profileImage && !getTherapist.profileImage.startsWith("http")) {
+      getTherapist.profileImage = `${host}${getTherapist.profileImage}`;
+    }
+    if (getTherapist.certificate && !getTherapist.certificate.startsWith("http")) {
+     getTherapist.certificate = `${host}${getTherapist.certificate}`;
     }
 
     res.status(200).json({ success: true, therapist: getTherapist });

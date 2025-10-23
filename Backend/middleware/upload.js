@@ -34,7 +34,7 @@ const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         "image/jpeg",
         "image/jpg",
-        "image,png",
+        "image/png",
         "application/pdf",
     ];
 
