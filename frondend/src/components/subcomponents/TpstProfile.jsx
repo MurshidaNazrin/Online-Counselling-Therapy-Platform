@@ -12,8 +12,11 @@ function TpstProfile() {
     certificate: "",
     bio: ""
   });
+
+  const [certificateFile, setCertificateFile] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
   const specializationOptions = [
     { value: "Anxiety", label: "Anxiety" },
     { value: "Depression", label: "Depression" },
@@ -59,6 +62,11 @@ function TpstProfile() {
     setProfile({ ...profile, profileImage: file });
   };
 
+  // certificate
+  const handleCertificateFile = (e) => {
+    setCertificateFile(e.target.files[0]);
+  }
+
 
   // update profile
   const handleSubmit = async (e) => {
@@ -74,12 +82,18 @@ function TpstProfile() {
       formData.append("profession", profile.profession);
       formData.append("qualifications", profile.qualifications);
       formData.append("experience", profile.experience);
-      formData.append("certificate", profile.certificate);
+      // formData.append("certificate", profile.certificate);
       formData.append("bio", profile.bio);
       formData.append("specialization", JSON.stringify(profile.specialization));
 
-      if (profile.profileImage) {
+      if (profile.profileImage instanceof File) {
         formData.append("profileImage", profile.profileImage);
+      }
+
+      if (certificateFile) {
+        formData.append("certificate", certificateFile);
+      } else if (profile.certificate && typeof profile.certificate === 'string') {
+        formData.append("certificate", profile.certificate);
       }
 
       // send multipart/form-data request
@@ -215,14 +229,22 @@ function TpstProfile() {
 
           {/* Certificate */}
           <div>
-            <label className="block font-semibold mb-1 text-gray-700"> Certificate (URL) </label>
+            <label className="block font-semibold mb-1 text-gray-700"> Certificate (Upload File or Enter URL) </label>
+            <input
+              type="file"
+              accept='.pdf,image/*'
+              name="certificate"
+              onChange={handleCertificateFile}
+              className="w-full border p-2 rounded-lg"
+            // placeholder="e.g., https://certificate-link.com"
+            />
             <input
               type="text"
               name="certificate"
               value={profile.certificate || ""}
               onChange={handleChange}
               className="w-full border p-2 rounded-lg"
-              placeholder="e.g., https://certificate-link.com"
+              placeholder="Or paste certificate URL"
             />
           </div>
 

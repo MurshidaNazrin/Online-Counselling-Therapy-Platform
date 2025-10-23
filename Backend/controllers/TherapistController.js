@@ -171,7 +171,8 @@ export async function therapistProfile(req, res) {
       bio
     } = req.body;
 
-    const profileImage = req.file ? `/uploads/${req.file.filename}` : undefined;
+    const profileImage = req.files?.profileImage ? `/uploads/${req.files.profileImage[0].filename}` : undefined;
+    const uploadedCertificate = req.files.certificate ? `/uploads/${req.files.certificate[0].filename}` : undefined;
 
     const therapist = await Therapist.findById(therapistId);
     if (!therapist) {
@@ -193,6 +194,13 @@ export async function therapistProfile(req, res) {
 
     // Add image only if new one uploaded
     if(profileImage) updateData.profileImage = profileImage;
+
+    // add certificate
+    if(uploadedCertificate){
+      updateData.certificate = uploadedCertificate;
+    }else if(certificate && certificate.startsWith("http")) {
+      updateData.certificate = certificate;
+    }
 
     const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, updateData, {new: true});
     if (tpstDetails) {
