@@ -6,24 +6,24 @@ const { verify } = pkg;
 // Role based authentication middleware 
 export default function Auth(allowedRoles = []) {
     return function (req, res, next) {
-    try{
-        const key = req.headers.authorization;
-        if(!key){
-            return res.status(401).send("Unautherized access: No token provided");
-        }
+        try {
+            const key = req.headers.authorization;
+            if (!key) {
+                return res.status(401).send("Unautherized access: No token provided");
+            }
 
-        const token = key.split(" ")[1];
-        const auth = verify(token, process.env.JWT_TOKEN);
-        req.user = auth;
+            const token = key.split(" ")[1];
+            const auth = verify(token, process.env.JWT_TOKEN);
+            req.user = auth;
 
-        // Role check
-        if(allowedRoles.length && !allowedRoles.includes(auth.role)){
-            return res.status(403).send("Forbidden: Insufficient role");
+            // Role check
+            if (allowedRoles.length && !allowedRoles.includes(auth.role)) {
+                return res.status(403).send("Forbidden: Insufficient role");
+            }
+            next();
+        } catch (err) {
+            console.error("Auth error:", err);
+            return res.status(401).json({ message: "Invalid token", error: err.message });
         }
-        next();
-    }catch(err){
-        console.error("Auth error:",err);
-        return res.status(401).json({message:"Invalid token", error:err.message});
-    }
     }
 }
