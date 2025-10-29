@@ -10,7 +10,7 @@ function SprAdmnNavbar({title}) {
     return (
         <div className='bg-white shadow-md p-4 flex justify-between items-center'>
             <div className='flex items-center gap-3'>
-            <img src="/logo2 copy.png" alt="logo" className='h-18 w-19' />
+            <img src="/logo2 copy.png" alt="logo" className='h-18 w-19 object-contain' />
             <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
             </div>
             <button
