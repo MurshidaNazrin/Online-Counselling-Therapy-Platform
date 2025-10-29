@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 
 // ==============adminlogin=====================
 
-export async function loginSuperadmin(req, res) {
+export async function loginAdmin(req, res) {
     try {
         const { email, password } = req.body;
 
@@ -96,27 +96,27 @@ export async function deleteAdmin(req, res) {
 
 // ==========Admin Login================
 
-export async function loginAdmin(req, res) {
-    try {
-        const { email, password } = req.body;
+// export async function loginAdmin(req, res) {
+//     try {
+//         const { email, password } = req.body;
 
-        const admin = await Admin.findOne({ email });
-        if (!admin || admin.role !== 'admin') {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
+//         const admin = await Admin.findOne({ email });
+//         if (!admin || admin.role !== 'admin') {
+//             return res.status(401).json({ error: 'Invalid credentials' });
+//         }
 
-        const isMatch = await bcrypt.compare(password, admin.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
+//         const isMatch = await bcrypt.compare(password, admin.password);
+//         if (!isMatch) {
+//             return res.status(401).json({ error: 'Invalid credentials' });
+//         }
 
-        const token = jwt.sign({ adminId: admin._id, role: admin.role }, process.env.JWT_TOKEN, { expiresIn: "24h" });
-        console.log(token);
-        res.status(200).json({ token, role: admin.role });
+//         const token = jwt.sign({ adminId: admin._id, role: admin.role }, process.env.JWT_TOKEN, { expiresIn: "24h" });
+//         console.log(token);
+//         res.status(200).json({ token, role: admin.role });
 
 
-    } catch (err) {
-        console.error('Admin login error:', err);
-        res.status(500).json({ error: 'Server error' });
-    }
-}
+//     } catch (err) {
+//         console.error('Admin login error:', err);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// }
