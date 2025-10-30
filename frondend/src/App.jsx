@@ -17,6 +17,9 @@ import SuperadminDashboard from './components/SuperadminDashboard';
 import ManageAdmin from './components/ManageAdmin';
 import Analytics from './components/Analytics';
 import AdminDashboard from './components/AdminDashboard';
+import PlatformSettings from './components/PlatformSettings';
+import Security from './components/Security';
+import Logs from './components/Logs';
 
 
 
@@ -39,11 +42,17 @@ function App() {
           <Route path='/therapist-otp' element={<TpstOTP />} />
           <Route path='/therapist-Home' element={<Tpstindex />} />
 
-          {/* ======Admin Routes======== */}
+          {/* ======SuperAdmin Routes======== */}
           <Route path='/admin-login' element={<AdminLogin />} />
           <Route path='/superadmin-dashboard' element={<PrivateRoute allowedRole="superadmin"><SuperadminDashboard /></PrivateRoute> } />
           <Route path='/manage-admins' element={<PrivateRoute allowedRole="superadmin"><ManageAdmin /></PrivateRoute> } />
           <Route path='/analytics' element={<PrivateRoute allowedRole="superadmin"><Analytics /></PrivateRoute> } />
+          <Route path='/settings' element={<PrivateRoute allowedRole="superadmin"><PlatformSettings /></PrivateRoute> } />
+          <Route path='/security' element={<PrivateRoute allowedRole="superadmin"><Security /></PrivateRoute> } />
+          <Route path='/logs' element={<PrivateRoute allowedRole="superadmin"><Logs /></PrivateRoute> } />
+
+
+          {/* ====Admin Routes */}
           <Route path='/admin-dashboard' element={<PrivateRoute allowedRole="admin"><AdminDashboard /></PrivateRoute> } />
         </Routes>
       </BrowserRouter>
