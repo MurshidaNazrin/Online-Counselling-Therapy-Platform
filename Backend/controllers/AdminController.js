@@ -64,6 +64,25 @@ export async function getAllAdmin(req, res) {
 }
 
 
+// ========Get Admin==========
+export async function getAdmin(req, res) {
+    try {
+        const { adminId } = req.params;
+
+        const admin = await Admin.findById(adminId).select('-password');
+
+        if (!admin) {
+            return res.status(404).json({ error: "Admin not found" });
+        }
+
+            res.status(200).json(admin);
+        
+    } catch (err) {
+        res.satus(500).json({ error: 'Failed to fetch admin' });
+    }
+}
+
+
 
 // ==============Edit Admin===============
 export async function updateAdmin(req, res) {

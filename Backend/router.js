@@ -29,6 +29,7 @@ router.route('/therapist-deleteprofile').delete(Auth(["therapist"]), tp.deleteAc
 router.route('/admin-login').post(ad.loginAdmin);
 router.route('/admin-create').post(Auth(['superadmin']),ad.createAdmin);
 router.route('/getadmins').get(Auth(['superadmin']), ad.getAllAdmin);
+router.get('/getadmin/:adminId', Auth(['superadmin']), ad.getAdmin);
 router.route('/updateadmin/:adminId').put(Auth(['superadmin']), ad.updateAdmin);
 router.route('/deleteadmin/:adminId').delete(Auth(['superadmin']), ad.deleteAdmin);
 

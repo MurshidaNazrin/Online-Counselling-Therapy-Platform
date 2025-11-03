@@ -14,7 +14,9 @@ import Tpstindex from './components/Tpstindex';
 import PrivateRoute from './components/subcomponents/PrivateRoute';
 import AdminLogin from './components/AdminLogin';
 import SuperadminDashboard from './components/SuperadminDashboard';
+import CreateAdmin from './components/subcomponents/CreateAdmin';
 import ManageAdmin from './components/ManageAdmin';
+import EditAdmin from './components/subcomponents/EditAdmin';
 import Analytics from './components/Analytics';
 import AdminDashboard from './components/AdminDashboard';
 import PlatformSettings from './components/PlatformSettings';
@@ -56,6 +58,8 @@ function App() {
           <Route path='/admin-login' element={<AdminLogin />} />
           <Route path='/superadmin-dashboard' element={<PrivateRoute allowedRole="superadmin"><SuperadminDashboard /></PrivateRoute>} />
           <Route path='/manage-admins' element={<PrivateRoute allowedRole="superadmin"><ManageAdmin /></PrivateRoute>} />
+          <Route path='/create-admin' element={<PrivateRoute allowedRole="superadmin"><CreateAdmin /></PrivateRoute>} />
+          <Route path='/edit-admin/:adminId' element={<PrivateRoute allowedRole="superadmin"><EditAdmin /></PrivateRoute>} />
           <Route path='/analytics' element={<PrivateRoute allowedRole="superadmin"><Analytics /></PrivateRoute>} />
           <Route path='/settings' element={<PrivateRoute allowedRole="superadmin"><PlatformSettings /></PrivateRoute>} />
           <Route path='/security' element={<PrivateRoute allowedRole="superadmin"><Security /></PrivateRoute>} />
