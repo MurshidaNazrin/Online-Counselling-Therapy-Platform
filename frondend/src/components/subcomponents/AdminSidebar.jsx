@@ -4,14 +4,14 @@ import { Home, Users, Calendar, FileText, DollarSign, BookOpen, Settings, List }
 
 export default function AdminSidebar() {
     const items = [
-        { to: "/", label: "Dashboard", icon: <Home /> },
-        { to: "/therapists", label: "Manage Therapists", icon: <Users /> },
-        { to: "/sessions", label: "Sessions", icon: <Calendar /> },
-        { to: "/reports", label: "Reports", icon: <FileText /> },
-        { to: "/payments", label: "Payments", icon: <DollarSign /> },
-        { to: "/content", label: "Content Manager", icon: <BookOpen /> },
-        { to: "/settings", label: "Settings", icon: <Settings /> },
-        { to: "/logs", label: "Logs", icon: <List /> },
+        { to: "/admin-dashboard", label: "Dashboard", icon: <Home /> },
+        { to: "/manage-therapists", label: "Manage Therapists", icon: <Users /> },
+        { to: "/admin-session", label: "Sessions", icon: <Calendar /> },
+        { to: "/admin-report", label: "Reports", icon: <FileText /> },
+        { to: "/admin-payments", label: "Payments", icon: <DollarSign /> },
+        { to: "/admin-content", label: "Content Manager", icon: <BookOpen /> },
+        { to: "/admin-settings", label: "Settings", icon: <Settings /> },
+        { to: "/admin-logs", label: "Logs", icon: <List /> },
     ];
     return (
         <aside className='w-64 bg-white border-r hidden md:block'>

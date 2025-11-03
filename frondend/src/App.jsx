@@ -22,6 +22,16 @@ import Security from './components/Security';
 import Logs from './components/Logs';
 
 
+import ManageTherapists from './components/ManageTherapists';
+import AdminSession from './components/AdminSession';
+import AdminReports from './components/AdminReports';
+import AdminPayments from './components/AdminPayments';
+import AdminContent from './components/AdminContentManager';
+import AdminSettings from './components/AdminSettings';
+import AdminLogs from './components/AdminLogs';
+
+
+
 
 function App() {
 
@@ -44,16 +54,23 @@ function App() {
 
           {/* ======SuperAdmin Routes======== */}
           <Route path='/admin-login' element={<AdminLogin />} />
-          <Route path='/superadmin-dashboard' element={<PrivateRoute allowedRole="superadmin"><SuperadminDashboard /></PrivateRoute> } />
-          <Route path='/manage-admins' element={<PrivateRoute allowedRole="superadmin"><ManageAdmin /></PrivateRoute> } />
-          <Route path='/analytics' element={<PrivateRoute allowedRole="superadmin"><Analytics /></PrivateRoute> } />
-          <Route path='/settings' element={<PrivateRoute allowedRole="superadmin"><PlatformSettings /></PrivateRoute> } />
-          <Route path='/security' element={<PrivateRoute allowedRole="superadmin"><Security /></PrivateRoute> } />
-          <Route path='/logs' element={<PrivateRoute allowedRole="superadmin"><Logs /></PrivateRoute> } />
+          <Route path='/superadmin-dashboard' element={<PrivateRoute allowedRole="superadmin"><SuperadminDashboard /></PrivateRoute>} />
+          <Route path='/manage-admins' element={<PrivateRoute allowedRole="superadmin"><ManageAdmin /></PrivateRoute>} />
+          <Route path='/analytics' element={<PrivateRoute allowedRole="superadmin"><Analytics /></PrivateRoute>} />
+          <Route path='/settings' element={<PrivateRoute allowedRole="superadmin"><PlatformSettings /></PrivateRoute>} />
+          <Route path='/security' element={<PrivateRoute allowedRole="superadmin"><Security /></PrivateRoute>} />
+          <Route path='/logs' element={<PrivateRoute allowedRole="superadmin"><Logs /></PrivateRoute>} />
 
 
           {/* ====Admin Routes */}
-          <Route path='/admin-dashboard' element={<PrivateRoute allowedRole="admin"><AdminDashboard /></PrivateRoute> } />
+          <Route path='/admin-dashboard' element={<PrivateRoute allowedRole="admin"><AdminDashboard /></PrivateRoute>} />
+          <Route path='/manage-therapists' element={<PrivateRoute allowedRole="admin"><ManageTherapists /></PrivateRoute>} />
+          <Route path='/admin-session' element={<PrivateRoute allowedRole="admin"><AdminSession /></PrivateRoute>} />
+          <Route path='/admin-report' element={<PrivateRoute allowedRole="admin"><AdminReports /></PrivateRoute>} />
+          <Route path='/admin-payments' element={<PrivateRoute allowedRole="admin"><AdminPayments /></PrivateRoute>} />
+          <Route path='/admin-content' element={<PrivateRoute allowedRole="admin"><AdminContent /></PrivateRoute>} />
+          <Route path='/admin-settings' element={<PrivateRoute allowedRole="admin"><AdminSettings /></PrivateRoute>} />
+          <Route path='/admin-logs' element={<PrivateRoute allowedRole="admin"><AdminLogs /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
 

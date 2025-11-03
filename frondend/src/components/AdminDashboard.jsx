@@ -112,7 +112,7 @@ function AdminDashboard() {
           </div>
 
           <div className="flex gap-3">
-            <Link to="/therapists" className='px-4 py-2 bg-blue-600 text-white rounded'>Manage Therapists</Link>
+            <Link to="/manage-therapists" className='px-4 py-2 bg-blue-600 text-white rounded'>Manage Therapists</Link>
             <Link to="/reports" className="px-4 py-2 bg-yellow-600 text-white rounded">View Reports</Link>
           </div>
         </div>
