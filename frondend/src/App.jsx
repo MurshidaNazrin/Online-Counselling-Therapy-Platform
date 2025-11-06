@@ -9,7 +9,7 @@ import OTPverification from './components/OTPverification';
 import TpstLogin from './components/TpstLogin';
 import TpstSignup from './components/TpstSignup';
 import TpstOTP from './components/TpstOTP';
-import Tpstindex from './components/Tpstindex';
+import Tpstindex from './components/therapists/Tpstindex';
 
 import PrivateRoute from './components/subcomponents/PrivateRoute';
 import AdminLogin from './components/AdminLogin';
