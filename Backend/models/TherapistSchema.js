@@ -33,7 +33,8 @@ const TherapistSchema = new mongoose.Schema({
     experience: { type: Number, default: 0, min: [0, "Experience cannot be negative"] },
     certificate: { type: String, default: null },
     bio: { type: String, default: null },
-    isApproved: { type: Boolean, default: false }, //admin sets true after recieving certificate
+    isApproved: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }, //admin sets true after recieving certificate
+    adminNotes: {type: String},
 }, { timestamps: true });
 
 

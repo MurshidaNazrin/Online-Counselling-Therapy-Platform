@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Select from "react-select";
+import {useNavigate} from "react-router-dom";
 import {CheckCircle, AlertCircle} from "lucide-react";
 
 function TpstProfile() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
     profileImage: "",
     profession: "",
@@ -118,6 +120,8 @@ function TpstProfile() {
 
       setMessage(res.data.message || "Profile updated successfully");
       setIsError(false);
+      navigate('/therapist-Home');
+
     } catch (err) {
       console.error("Update error:", err);
       setMessage(err.response?.data?.message || "Profile update failed");

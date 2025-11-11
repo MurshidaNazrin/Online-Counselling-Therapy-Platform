@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from "react-hot-toast";
 
+
+
 import Index from "./components/Index";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
@@ -10,6 +12,10 @@ import TpstLogin from './components/TpstLogin';
 import TpstSignup from './components/TpstSignup';
 import TpstOTP from './components/TpstOTP';
 import Tpstindex from './components/therapists/Tpstindex';
+import TpstApplication from './components/subcomponents/TpstProfile';
+import TpstProfile from './components/subcomponents/TpstProfile';
+import TpstFullProfile from './components/therapists/TpstFullProfile';
+// import ApplicationStatus from './components/therapists/ApplicationStatus';
 
 import PrivateRoute from './components/subcomponents/PrivateRoute';
 import AdminLogin from './components/AdminLogin';
@@ -35,6 +41,7 @@ import AdminLogs from './components/AdminLogs';
 
 
 
+
 function App() {
 
 
@@ -48,11 +55,15 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/verify-otp' element={<OTPverification />} />
 
-
+        {/* =======Therapist Routes============ */}
           <Route path='/therapist-login' element={<TpstLogin />} />
           <Route path='/therapist-signup' element={<TpstSignup />} />
           <Route path='/therapist-otp' element={<TpstOTP />} />
           <Route path='/therapist-Home' element={<Tpstindex />} />
+          <Route path='/application' element={<TpstApplication />} />
+          <Route path='/profile-setup' element={<TpstProfile />} />
+          <Route path='/therapist-profile' element={<TpstFullProfile />} />
+          {/* <Route path='/application-status' element={<ApplicationStatus />} /> */}
 
           {/* ======SuperAdmin Routes======== */}
           <Route path='/admin-login' element={<AdminLogin />} />
