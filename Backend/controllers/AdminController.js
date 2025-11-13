@@ -1,4 +1,5 @@
 import Admin from '../models/AdminSchema.js';
+import Therapist from "../models/TherapistSchema.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -75,8 +76,8 @@ export async function getAdmin(req, res) {
             return res.status(404).json({ error: "Admin not found" });
         }
 
-            res.status(200).json(admin);
-        
+        res.status(200).json(admin);
+
     } catch (err) {
         res.satus(500).json({ error: 'Failed to fetch admin' });
     }
@@ -139,3 +140,110 @@ export async function deleteAdmin(req, res) {
 //         res.status(500).json({ error: 'Server error' });
 //     }
 // }
+
+
+//  -----------------------------------------------
+// |=================Manage Therapists============ |
+//  -----------------------------------------------
+
+// ==========Get all Therapists ================
+export async function getAllTherapists(req, res) {
+    try {
+        const { status } = req.query;
+        const filter = {};
+
+        if (status) filter.isApproved = status;
+
+        const therapists = await Therapist.find(filter).select('-password -otp -otpExpires -__v').sort({ createdAt: -1 });
+
+        if (!therapists.length) {
+            return res.status(200).json({
+                success: true, message: 'No therapist application found', data: [],
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            total: therapists.length,
+            data: therapists,
+        });
+    } catch (err) {
+        console.error('Error fetching therapists:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error while fetching therapists',
+        });
+    }
+}
+
+
+// ========get single therapist===============
+export async function getTherapist(req, res) {
+    try {
+        const { id } = req.params;
+        const therapist = await Therapist.findById(id).select("-password -otp -otpExpires");
+
+        if (!therapist) {
+            return res.status(404).json({ error: "Therapist not found" });
+        }
+
+        res.status(200).json(therapist);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch therapist" });
+    }
+}
+
+
+
+// ===============approve or reject therapist application====================
+export async function updateTherapistStatus(req, res) {
+    try {
+        const { id } = req.params;
+        const { isApproved, adminNotes } = req.body;
+
+        if (!["pending", 'approved', 'rejected'].includes(isApproved)) {
+            return res.status(400).json({ error: "invalid status value" });
+        }
+
+        const updateTherapist = await Therapist.findByIdAndUpdate(id, { isApproved, adminNotes }, { new: true }).select("-password -otp -otpExpires");
+
+        if (!updateTherapist) {
+            return res.status(404).json({ error: "Therapist not found" });
+        }
+
+        res.status(200).json(updateTherapist);
+    } catch (err) {
+        console.error("Error updating therapist status:", err);
+        res.status(500).json({ error: "Failed to update status" });
+    }
+}
+
+
+// ======== disable/freez therapist accounts===========
+export async function disableAccount(req, res) {
+    try {
+        const { id } = req.params;
+        const { isActive, adminNotes } = req.body;
+
+        const updatedTherapist = await Therapist.findByIdAndUpdate(
+            id,
+            {
+                isActive,
+                adminNotes: adminNotes || (isActive ? "Account enabled by admin" : "Account disabled by admin")
+            },
+            { new: true }
+        ).select("-password -otp -otpExpires");
+
+        if (!updatedTherapist) {
+            return res.status(404).json({ error: "Therapist not found" });
+        }
+
+        res.status(200).json({
+            message: `Therapist account has been ${isActive ? "enabled" : "disabled"} successfully`,
+            therapist: updatedTherapist
+        });
+    } catch (err) {
+        console.error("Toggle therapist account error:", err);
+        res.status(500).json({ error: "Server error" });
+    }
+}

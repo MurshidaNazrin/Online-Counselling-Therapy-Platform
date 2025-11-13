@@ -35,6 +35,7 @@ const TherapistSchema = new mongoose.Schema({
     bio: { type: String, default: null },
     isApproved: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }, //admin sets true after recieving certificate
     adminNotes: {type: String},
+    isActive: {type: Boolean, default: true},
 }, { timestamps: true });
 
 

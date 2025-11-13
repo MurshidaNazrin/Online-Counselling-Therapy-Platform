@@ -4,7 +4,6 @@ import Sidebar from "./subcomponents/AdminSidebar";
 import Card from "./ui/card";
 import { Users, Calendar, FileText, DollarSign } from "lucide-react";
 import { Link } from 'react-router-dom';
-// import {link} from "react-router-dom";
 
 function AdminDashboard() {
 

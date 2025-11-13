@@ -137,6 +137,10 @@ export async function login(req, res) {
       return res.status(403).json({ message: "Email not verified.Please verify Your email before login" });
     }
 
+    if (!therapist.isActive) {
+      return res.status(403).json({ message: "Your account has been disabled. Contact support." });
+    }
+
     // compare password
     const isMatch = await bcrypt.compare(password, therapist.password);
     if (!isMatch) {
@@ -162,7 +166,7 @@ export async function therapistProfile(req, res) {
     const therapistId = req.user.therapistId;
     // console.log(therapistId);
 
-    const { 
+    const {
       profession,
       qualifications,
       specialization,
@@ -186,23 +190,23 @@ export async function therapistProfile(req, res) {
     const updateData = {
       profession,
       qualifications,
-      specialization: specialization ? JSON.parse(specialization) :therapist.specialization,
+      specialization: specialization ? JSON.parse(specialization) : therapist.specialization,
       experience,
       certificate,
       bio,
     };
 
     // Add image only if new one uploaded
-    if(profileImage) updateData.profileImage = profileImage;
+    if (profileImage) updateData.profileImage = profileImage;
 
     // add certificate
-    if(uploadedCertificate){
+    if (uploadedCertificate) {
       updateData.certificate = uploadedCertificate;
-    }else if(certificate && certificate.startsWith("http")) {
+    } else if (certificate && certificate.startsWith("http")) {
       updateData.certificate = certificate;
     }
 
-    const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, updateData, {new: true});
+    const tpstDetails = await Therapist.findByIdAndUpdate(therapistId, updateData, { new: true });
     if (tpstDetails) {
       return res.status(200).json({ message: "Profile updated Successfully", tpstDetails })
     }
@@ -230,7 +234,7 @@ export async function getTherapistProfile(req, res) {
       getTherapist.profileImage = `${host}${getTherapist.profileImage}`;
     }
     if (getTherapist.certificate && !getTherapist.certificate.startsWith("http")) {
-     getTherapist.certificate = `${host}${getTherapist.certificate}`;
+      getTherapist.certificate = `${host}${getTherapist.certificate}`;
     }
 
     res.status(200).json({ success: true, therapist: getTherapist });

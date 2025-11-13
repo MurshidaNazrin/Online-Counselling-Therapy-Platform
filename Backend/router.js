@@ -36,4 +36,8 @@ router.route('/deleteadmin/:adminId').delete(Auth(['superadmin']), ad.deleteAdmi
 
 // Admin
 // router.route('/admin-login').post(ad.loginAdmin);
+router.route('/therapists').get(Auth(['admin','superadmin']), ad.getAllTherapists);
+router.route('/therapist/:id').get(Auth(['admin','superadmin']), ad.getTherapist);
+router.route('/therapist-status/:id').put(Auth(['admin','superadmin']), ad.updateTherapistStatus);
+router.route('/therapist-active/:id').put(Auth(['admin','superadmin']), ad.disableAccount);
 export default router

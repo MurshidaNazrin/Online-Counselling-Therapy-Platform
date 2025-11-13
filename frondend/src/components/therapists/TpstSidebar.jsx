@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { LayoutDashboard, Users, MessageSquare, Calendar, DollarSign, Settings, LogOut, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+
+
+// ==============change all responsive design======================
 
 function TpstSidebar({ onToggle }) {
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   // detect screensize
   useEffect(() => {
@@ -18,6 +23,18 @@ function TpstSidebar({ onToggle }) {
     setIsOpen(newState);
     onToggle(newState);
   };
+
+  // ============Logout+++===============
+  const handleLogout = () => {
+      try {
+    localStorage.removeItem("token");
+    navigate('/');
+    toast.success("Logout Successfully..!");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+
+  }
   return (
     <>
     <div
@@ -83,13 +100,13 @@ function TpstSidebar({ onToggle }) {
 
       {/* Logout */}
       <div>
-        <Link
-          to="/logout"
+        <button
+          onClick={handleLogout}
           className="flex items-center space-x-3 text-red-500 hover:text-red-600"
         >
           <LogOut size={20} />
           {isOpen && <span>Logout</span>}
-        </Link>
+        </button>
       </div>
 
       {/* Close main sidebar div */}
