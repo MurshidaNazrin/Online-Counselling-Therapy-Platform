@@ -163,8 +163,9 @@ export async function login(req, res) {
 // ================Setup/Update Therapist Profile=======================
 export async function therapistProfile(req, res) {
   try {
-    const therapistId = req.user.therapistId;
-    // console.log(therapistId);
+    const therapistId = req.user?.therapistId;
+     if (!therapistId) return res.status(401).json({ message: "Unauthorized" });
+    console.log(therapistId);
 
     const {
       profession,
@@ -175,8 +176,8 @@ export async function therapistProfile(req, res) {
       bio
     } = req.body;
 
-    const profileImage = req.files?.profileImage ? `/uploads/profileImages/${req.files.profileImage[0].filename}` : undefined;
-    const uploadedCertificate = req.files.certificate ? `/uploads/certificates/${req.files.certificate[0].filename}` : undefined;
+    const profileImage = req.files?.profileImage?.[0] ? `/uploads/profileImages/${req.files.profileImage[0].filename}` : undefined;
+    const uploadedCertificate = req.files.certificate?.[0] ? `/uploads/certificates/${req.files.certificate[0].filename}` : undefined;
 
     const therapist = await Therapist.findById(therapistId);
     if (!therapist) {
