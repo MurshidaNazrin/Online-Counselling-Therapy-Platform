@@ -5,8 +5,8 @@ const UserSchema = new mongoose.Schema({
     //common fields
     name: { type: String, required: [true, "Name is required"], trim: true },
     email: { type: String, required: [true, "Email is required"], unique: true, lowercase: true, trim: true, validate: [validator.isEmail, "Invalid email format"] },
-    password: { type: String, required: [true, "Password is required"], minlength: 8 }, 
-    role: { type: String, default: 'client', enum: ["client"]},
+    password: { type: String, required: [true, "Password is required"], minlength: 8 },
+    role: { type: String, default: 'client', enum: ["client"] },
     // profileImage: { type: String, default: null },
 
 
@@ -15,22 +15,19 @@ const UserSchema = new mongoose.Schema({
     otp: { type: Number },
     otpExpires: { type: Date },
 
-    // Therapist-specific fields
-    // profession: {
-    //     type: String, enum: ["Psychiatrist", "Psychologist",
-    //         "Licensed Professional Counsellor", "Licensed Social Worker",
-    //         "Licensed Marriage and Family Therapist", "Psychiatric Nurse"
-    //     ], default: null
-    // },
+    // profile info
+    gender: { type: String, enum: ["male", "female", "other"], default: null, },
+    phone: { type: String, default: null },
+    profileImage: { type: String, default: null },
 
-    // qualifications: { type: String, default: null },
-    // specialization: { type: String, default: null },
-    // experience: { type: Number, default: 0 },
-    // certificate: { type: String, default: null },
-    // isVerified: { type: Boolean, default: false }, //admin sets true after recieving certificate
+    // For session booking system
+    // sessions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" },],
 
-    // // Admin-specific
-    // isSuperAdmin: {type: Boolean,default: false},
+    // Progress notes from therapist
+    // progressNotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProgressNotes", },],
+
+    // notifications 
+    // notifications: [{ type: Object, default: { title: String, message: String, createdAt: { type: Date, default: Date.now, }, }, },],
 }, { timestamps: true });
 
 

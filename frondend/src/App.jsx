@@ -7,6 +7,7 @@ import Index from "./components/Index";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import OTPverification from './components/OTPverification';
+import Home from './components/Home';
 
 import TpstLogin from './components/TpstLogin';
 import TpstSignup from './components/TpstSignup';
@@ -54,6 +55,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/verify-otp' element={<OTPverification />} />
+          <Route path='/home' element={<Home />} />
 
         {/* =======Therapist Routes============ */}
           <Route path='/therapist-login' element={<TpstLogin />} />

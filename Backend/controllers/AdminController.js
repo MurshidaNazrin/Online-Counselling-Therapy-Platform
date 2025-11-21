@@ -162,13 +162,27 @@ export async function getAllTherapists(req, res) {
             });
         }
 
+        const host = `${req.protocol}://${req.get("host")}`;
+
+        const updated = therapists.map(t => ({
+            ...t._doc,
+            profileImage: t.profileImage ?
+                (t.profileImage.startsWith("http") ? t.profileImage : `${host}${t.profileImage}`) :
+                null,
+
+            certificate: t.certificate
+                ? (t.certificate.startsWith("http") ? t.certificate : `${host}${t.certificate}`)
+                : null,
+        }))
+
+
         res.status(200).json({
             success: true,
-            total: therapists.length,
-            data: therapists,
+            total: updated.length,
+            data: updated,
         });
     } catch (err) {
-        console.error('Error fetching therapists:', error);
+        console.error('Error fetching therapists:', err);
         res.status(500).json({
             success: false,
             message: 'Server error while fetching therapists',

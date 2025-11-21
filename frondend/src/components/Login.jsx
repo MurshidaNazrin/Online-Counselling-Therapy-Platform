@@ -32,6 +32,7 @@ function Login() {
       console.log(Data);
       
       alert("successfully login");
+      navigate('/home');
     }catch(err){
       console.error("Login failed",err)
     }

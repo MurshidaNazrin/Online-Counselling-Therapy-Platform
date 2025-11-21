@@ -259,3 +259,26 @@ export async function deleteAccount(req, res) {
     res.status(500).json({ success: false, message: "Server error" });
   }
 }
+
+// =============profile verification status========================
+export async function getTherapistStatus(req,res){
+  try{
+    const therapistId = req.user.therapistId;
+
+    const data = await Therapist.findById(therapistId).select("isApproved adminNotes createdAt updatedAt");
+
+    if(!data){
+      return res.status(404).json({error: "Therapist not found"});
+    }
+    
+    res.status(200).json({
+      status: data.isApproved,
+      adminNotes: data.adminNotes || "",
+      submittedAt: data.createdAt,
+      reviewedAt: data.updatedAt,
+    });
+  }catch(err){
+    console.error("Error fetching therapist status:", err);
+    res.status(500).json({ error: "Failed to fetch status" });
+  }
+}

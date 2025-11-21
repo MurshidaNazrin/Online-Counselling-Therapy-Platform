@@ -23,6 +23,7 @@ router.route('/therapist-login').post(tp.login);
 router.route('/therapist-createprofile').put(Auth(["therapist"]), upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificate", maxCount: 1 },]), tp.therapistProfile);
 router.route('/therapist-profile').get(Auth(["therapist"]), tp.getTherapistProfile);
 router.route('/therapist-deleteprofile').delete(Auth(["therapist"]), tp.deleteAccount);
+router.route('/therapist-status').get(Auth(["therapist"]), tp.getTherapistStatus);
 
 
 // super Admin

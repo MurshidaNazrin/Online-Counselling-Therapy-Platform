@@ -7,14 +7,14 @@ import SendApplication from './SendApplication';
 function TpstNavbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [therapistStatus, setTherapistStatus] = useState("pending");
-      // 👆 you can replace this with real data from backend (via API call or context)
+    // 👆 you can replace this with real data from backend (via API call or context)
 
-      useEffect(() => {
-          // Example: Fetch status from API or context
-    // fetch('/api/therapist/status').then(res => res.json()).then(data => setTherapistStatus(data.status));
-      }, []);
+    useEffect(() => {
+        // Example: Fetch status from API or context
+        // fetch('/api/therapist/status').then(res => res.json()).then(data => setTherapistStatus(data.status));
+    }, []);
 
-      const isPending = therapistStatus === "pending" || therapistStatus === "Under Review";
+    const isPending = therapistStatus === "pending" || therapistStatus === "Under Review";
     return (
         <nav className='w-full bg-white shadow-md px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50'>
 
@@ -25,15 +25,15 @@ function TpstNavbar() {
 
             {/* Menu */}
             <div className="hidden md:flex space-x-6 font-medium text-teal-600">
-                {isPending ? ( 
+                {isPending ? (
                     <SendApplication />
                 ) : (
                     <>
-                      <li><Link to="/therapist-dashboard" className="hover:text-teal-700">Dashboard</Link></li>
-                      <li><Link to="/therapist-clients" className="hover:text-teal-700">Clients</Link></li>
-                      <li><Link to="/therapist-messages" className="hover:text-teal-700">Messages</Link></li>
-                      <li><Link to="/therapist-earnings" className="hover:text-teal-700">Earnings</Link></li>
-                      <li><Link to="/therapist-availability" className="hover:text-teal-700">Availability</Link></li>
+                        <li><Link to="/therapist-dashboard" className="hover:text-teal-700">Dashboard</Link></li>
+                        <li><Link to="/therapist-clients" className="hover:text-teal-700">Clients</Link></li>
+                        <li><Link to="/therapist-messages" className="hover:text-teal-700">Messages</Link></li>
+                        <li><Link to="/therapist-earnings" className="hover:text-teal-700">Earnings</Link></li>
+                        <li><Link to="/therapist-availability" className="hover:text-teal-700">Availability</Link></li>
                     </>
                 )}
             </div>
@@ -42,13 +42,13 @@ function TpstNavbar() {
             <div className="hidden md:flex items-center space-x-5">
                 {!isPending && (
                     <>
-                      <Bell className="curser-pointer" size={20} />
-                      <MessageSquare className="curser-pointer" size={20} />
-                      <Calendar className="curser-pointer" size={20} />
-                      <DollarSign className="curser-pointer" size={20} />
-                   </>
+                        <Bell className="curser-pointer" size={20} />
+                        <MessageSquare className="curser-pointer" size={20} />
+                        <Calendar className="curser-pointer" size={20} />
+                        <DollarSign className="curser-pointer" size={20} />
+                    </>
                 )}
-                    <TpstProfileDropdown />
+                <TpstProfileDropdown />
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -66,17 +66,17 @@ function TpstNavbar() {
                     <X size={26} />
                 </button>
 
-        {isPending ? (
-          <SendApplication />
-        ) : (
-          <>
-            <Link to="/therapist-dashboard" className="text-teal-700 font-medium border-b py-2">Dashboard</Link>
-            <Link to="/therapist-clients" className="text-teal-700 font-medium border-b py-2">Clients</Link>
-            <Link to="/therapist-messages" className="text-teal-700 font-medium border-b py-2">Messages</Link>
-            <Link to="/therapist-earnings" className="text-teal-700 font-medium border-b py-2">Earnings</Link>
-            <Link to="/therapist-availability" className="text-teal-700 font-medium border-b py-2">Availability</Link>
-          </>
-        )}
+                {isPending ? (
+                    <SendApplication />
+                ) : (
+                    <>
+                        <Link to="/therapist-dashboard" className="text-teal-700 font-medium border-b py-2">Dashboard</Link>
+                        <Link to="/therapist-clients" className="text-teal-700 font-medium border-b py-2">Clients</Link>
+                        <Link to="/therapist-messages" className="text-teal-700 font-medium border-b py-2">Messages</Link>
+                        <Link to="/therapist-earnings" className="text-teal-700 font-medium border-b py-2">Earnings</Link>
+                        <Link to="/therapist-availability" className="text-teal-700 font-medium border-b py-2">Availability</Link>
+                    </>
+                )}
 
                 <div className="flex items-center space-x-2 pt-4">
                     {/* <User size={22} className='text-gray-700' />

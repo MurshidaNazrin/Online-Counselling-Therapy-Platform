@@ -1,246 +1,4 @@
-
-
-// import React, { useState, useEffect } from 'react';
-// import axios from "axios";
-// import {  ChevronDown, ChevronUp, Check, X, Ban, RefreshCcw } from "lucide-react";
-// import Navbar from './subcomponents/AdminNavbar';
-// import Sidebar from "./subcomponents/AdminSidebar";
-
-
-// function ManageTherapists() {
-//     const [therapists, setTherapists] = useState([]);
-//     const [filter, setFilter] = useState("all");
-//     const [loading, setLoading] = useState(false);
-//     const [selected, setSelected] = useState(null);
-//     const [notes, setNotes] = useState("");
-
-//     async function fetchTherapists() {
-//         try {
-//             setLoading(true);
-//             const token = localStorage.getItem("token");
-
-//             const query = filter === "all" ? "" : `?status=${filter}`;
-//             const res = await axios.get(`http://localhost:3000/api/therapists${query}`,
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 }
-//             );
-
-
-//             setTherapists(res.data.data || []);
-//         } catch (err) {
-//             console.error("Fetch error:", err);
-//         } finally {
-//             setLoading(false);
-//         }
-//     }
-//     useEffect(() => {
-//         fetchTherapists();
-//     }, [filter]);
-
-
-
-//     async function updateStatus(id, status) {
-//         try {
-//             const token = localStorage.getItem("token");
-
-//             await axios.put(`http://localhost:3000/api/therapist-status/${id}`,
-//                 { isApproved: status, adminNotes: notes },
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 }
-//             );
-
-//             fetchTherapists();
-//             setSelected(null);
-//             setNotes("");
-//         } catch (err) {
-//             console.error("Status update error", err);
-//         }
-//     }
-
-
-
-//     async function toggleAccount(id, action) {
-//         try {
-//             const token = localStorage.getItem("token");
-
-//             await axios.put(`http://localhost:3000/api/therapist-active/${id}`,
-//                 { isActive: action },
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${token}`,
-//                     },
-//                 }
-//             );
-//             fetchTherapists();
-//         } catch (err) {
-//             console.error("Account toggle error", err);
-//         }
-//     }
-
-
-//     return (
-//         <div className='p-4 md:p-6 max-w-7xl mx-auto'>
-
-//             {/* Header */}
-//             <div className='flex flex-col sm:flex-row justify-between items-start sm:justify-between sm:items-center gap-4 mb-6'>
-//                 <h1 className='text-xl sm:text-2xl font-semibold tracking-tight'>Manage Therapists</h1>
-
-
-//                 <select
-//                     className='border px-4 py-2 rounded-md w-full sm:w-fit'
-//                     value={filter}
-//                     onChange={(e) => setFilter(e.target.value)}>
-
-//                     <option value="all">All</option>
-//                     <option value="pending">Pending</option>
-//                     <option value="approved">Approved</option>
-//                     <option value="rejected">Rejected</option>
-//                 </select>
-//             </div>
-
-//             {/* Loading */}
-//             {loading && <p className='text-center py-6 text-gray-600'>Loading.....</p>}
-
-//             {/* responsive Table-cards */}
-//             <div className="hidden md:block overflow-x-auto rounded-lg shadow bg-white">
-//                 <table className="min-w-full">
-//                     <thead>
-//                         <tr className="bg-gray text-left text-sm text-gray-70">
-//                             <th className="p-4">Name</th>
-//                             <th className="p-4">Email</th>
-//                             <th className="p-4">Status</th>
-//                             <th className="p-4">Active</th>
-//                             <th className="p-4">Actions</th>
-//                         </tr>
-//                     </thead>
-
-//                     <tbody>
-//                         {therapists.map((t) => (
-//                             <tr key={t._id} 
-//                             onClick={()=>setSelected(t)}
-//                             className={`border-t cursor-pointer transition ${t.isActive ? "" : "opacity-50 bg-gray-200"}`}>
-//                                 <td className="p-4">{t.name}</td>
-//                                 <td className="p-4 brak-all">{t.email}</td>
-//                                 <td className="p-4 capitalize">{t.isApproved}</td>
-//                                 <td className="p-4">{t.isActive ? "Active" : "Disabled"}</td>
-//                                 <td className="p-4 flex gap-4 items-center">
-//                                     <button
-//                                         onClick={() => toggleAccount(t._id, !t.isActive)}
-//                                         className="text-red-600"
-//                                     >
-//                                         {t.isActive ? <Ban size={20} /> : <RefreshCcw size={20} />}
-//                                     </button>
-//                                 </td>
-//                             </tr>
-//                         ))}
-//                     </tbody>
-//                 </table>
-//             </div>
-
-
-//             {/* mobile */}
-//             <div className="md:hidden grid gap-4">
-//                 {therapists.map((t) => (
-//                     <div key={t._id}
-//                         onClick={()=> setSelected(t)}
-//                         className={`bg-white p-4 rounded-xl shadow space-y-2 cursor-pointer transition ${t.isActive ? "" : "opacity-50 bg-gray-200"}`}>
-//                         <p className="font-semibold text-lg">{t.name}</p>
-//                         <p className='text-sm break-all' >{t.email}</p>
-
-//                         <div className="flex justify-between text-sm">
-//                             <span>Status: {t.isApproved}</span>
-//                             <span>Active: {t.isActive ? "Yes" : "No"}</span>
-//                         </div>
-
-//                         <div className="flex gap-4 mt-2">
-//                             <button
-//                                 onClick={() => toggleAccount(t._id, !t.isActive)}
-//                                 className='text-red-600 flex items-center gap-1'>
-
-//                                 {t.isActive ? (
-//                                     <>
-//                                         <Ban size={18} /> Disable
-//                                     </>
-//                                 ) : (
-//                                     <>
-//                                         <RefreshCcw size={18} /> Enable
-//                                     </>
-//                                 )}
-
-//                             </button>
-//                         </div>
-//                     </div>
-//                 ))}
-//             </div>
-
-//             {/* Modal */}
-//             {selected && (
-//                 <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4 z-50">
-//                     <div className="bg-white w-full max-w-lg rounded-xl p-6 shadow-lg max-h[90vh] overflow-y-auto">
-//                         <h2 className="text-xl font-semibold mb-2">{selected.name}</h2>
-
-//                         <p className="mb-1"><b>Email:</b>{selected.email}</p>
-//                         <p className="mb-1"><b>Proffession:</b>{selected.proffession}</p>
-//                         <p className="mb-1"><b>Experience:</b>{selected.experience}</p>
-//                         <p className="mb-1"><b>Experience:</b>{selected.certificate}</p>
-//                         {/* add qualification, specialization,certificate, bio */}
-
-//                         <textarea
-//                             className="w-full border p-3 rounded-md mt-4"
-//                             rows="3"
-//                             placeholder="Admin Notes..."
-//                             value={notes}
-//                             onChange={(e) => setNotes(e.target.value)}
-//                         />
-
-//                         <div className="flex flex-col sm:flex-row justify-between mt-6 gap-3">
-//                             <button
-//                                 onClick={() => updateStatus(selected._id, "approved")}
-//                                 className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg flex items-center justify-center gap-2"
-//                             >
-//                                 <Check size={18} /> Approve
-//                             </button>
-
-//                             <button
-//                                 onClick={() => updateStatus(selected._id, "rejected")}
-//                                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg flex items-center justify-center gap-2"
-//                             >
-//                                 <X size={18} /> Reject
-//                             </button>
-
-//                             <button
-//                                 onClick={() => setSelected(null)}
-//                                 className="flex-1 px-4 py-2 border rounded-lg"
-//                             >
-//                                 Close
-//                             </button>
-//                         </div>
-
-//                     </div>
-//                 </div>
-//             )}
-
-
-//         </div>
-//     )
-// }
-
-// export default ManageTherapists
-
-
-
-
-
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { ChevronDown, ChevronUp, Ban, RefreshCcw, Check, X } from "lucide-react";
 import AdminLayout from "./subcomponents/AdminLayouts";
@@ -251,6 +9,7 @@ function ManageTherapists() {
     const [loading, setLoading] = useState(false);
     const [expanded, setExpanded] = useState(null);
     const [notes, setNotes] = useState("");
+    const containerRef = useRef(null);
 
     function statusBadge(status) {
         const base = "px-3 py-1 rounded-full text-xs font-semibold";
@@ -288,6 +47,18 @@ function ManageTherapists() {
         fetchTherapists();
     }, [filter]);
 
+    useEffect(() => {
+        function handleClickOutside(e){
+            if(expanded && containerRef.current && !containerRef.current.contains(e.target)){
+              setExpanded(null);
+              setNotes("");
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return ()=>document.removeEventListener("mousedown", handleClickOutside);
+    }, [expanded]);
+
 
 
     async function updateStatus(id, status) {
@@ -304,7 +75,7 @@ function ManageTherapists() {
             );
 
             fetchTherapists();
-            setSelected(null);
+            setExpanded(null);
             setNotes("");
         } catch (err) {
             console.error("Status update error", err);
@@ -358,11 +129,9 @@ function ManageTherapists() {
                                 <th className="p-4">Name</th>
                                 <th className="p-4">Email</th>
                                 <th className="p-4">Status</th>
-                                {/* <th className="p-4">Active</th> */}
                                 <th className="p-4">Actions</th>
                             </tr>
                         </thead>
-
                         <tbody>
                             {therapists.map((t) => {
                                 const isOpen = expanded === t._id;
@@ -376,7 +145,11 @@ function ManageTherapists() {
                                             className={`cursor-pointer border-t transition-all ${!t.isActive ? "bg-gray-100 opacity-70" : "hover:bg-gray-50 bg-white"
                                                 }`}
                                         >
-                                            <td className="p-4 font-medium">{t.name}</td>
+                                            <td className="p-4 flex gap-3 items-center">
+                                                <img src={t.profileImage} alt="profileimage" className="h-12 w-12 rounded-full object-cover" />
+                                                <span className="font-medium">{t.name}</span>
+
+                                            </td>
                                             <td className="p-4 break-all">{t.email}</td>
                                             <td className="p-4">{statusBadge(t.isApproved)}</td>
                                             {/* <td className="p-4">{t.isActive ? "Active" : "Disabled"}</td> */}
@@ -397,67 +170,128 @@ function ManageTherapists() {
                                         {/* EXPANDED DETAILS */}
                                         {isOpen && (
                                             <tr className="bg-gray-50 border-t">
-                                                <td colSpan="4" className="p-6 space-y-3">
-                                                    <div className="grid md:grid-cols gap-4">
-                                                        <p><b>Profession:</b> {t.profession || "—"}</p>
-                                                        <p><b>Experience:</b> {t.experience || "—"} years</p>
-                                                        <p><b>Qualifications:</b> {t.qualifications || "—"}</p>
-                                                        <p><b>Specialization:</b> {t.specialization || "—"}</p>
-                                                        <p><b>Phone:</b> {t.phone || "—"}</p>
-                                                        <p><b>Gender:</b> {t.gender || "—"}</p>
-                                                        <p><b>Languages:</b> {t.languages || "—"}</p>
-                                                        <p><b>Status:</b> {t.isApproved}</p>
-                                                    </div>
+                                                <td colSpan="4" className="p-6">
+                                                    <div ref={containerRef} className="bg-white rounded-2xl shadow-md p-6 md:p-10 grid md:grid-cols-3 gap-8 items-start">
 
-                                                    <p><b>Bio:</b>{t.bio || "-"}</p>
+                                                        {/* LEFT SECTION - profile image + basic info */}
+                                                        <div className="flex flex-col items-center text-center space-y-3">
 
-                                                    {t.certificate && (
-                                                        <p>
-                                                            <b>Certificate:</b>{" "}
-                                                            <a
-                                                                href={t.certificate}
-                                                                target="_blank"
-                                                                className="text-blue-600 underline"
-                                                            >
-                                                                View Certificate
-                                                            </a>
-                                                        </p>
-                                                    )}
+                                                            <img
+                                                                src={t.profileImage}
+                                                                alt="profile"
+                                                                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-teal-200"
+                                                            />
 
+                                                            <h2 className="text-lg font-semibold text-gray-800">
+                                                                {t.name}
+                                                            </h2>
 
-                                                    <textarea
-                                                        className="w-full border p-3 rounded-lg mt-2 shadow-sm"
-                                                        rows="3"
-                                                        placeholder="Admin Notes..."
-                                                        value={notes}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        onChange={(e) => setNotes(e.target.value)}
-                                                    />
+                                                            <p className="text-sm text-gray-500">
+                                                                {t.profession || "N/A"}
+                                                            </p>
 
-                                                    <div className="flex gap-3">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                updateStatus(t._id, "approved");
-                                                            }}
-                                                            className="px-4 py-2 bg-green-600 text-white rounded-lg"
-                                                        >
-                                                            Approve
-                                                        </button>
+                                                            {t.certificate && (
+                                                                <a
+                                                                    href={t.certificate}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
+                                                                >
+                                                                    View Certificate
+                                                                </a>
+                                                            )}
 
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                updateStatus(t._id, "rejected");
-                                                            }}
-                                                            className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                                                        >
-                                                            Reject
-                                                        </button>
+                                                            <div className="flex gap-3 mt-4">
+                                                                <button
+                                                                    onClick={() => updateStatus(t._id, "approved")}
+                                                                    className="flex items-center gap-1 bg-green-600 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-green-700 transition"
+                                                                >
+                                                                    <Check size={16} />
+                                                                </button>
+
+                                                                <button
+                                                                    onClick={() => updateStatus(t._id, "rejected")}
+                                                                    className="flex items-center gap-1 bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-red-600 transition"
+                                                                >
+                                                                    <X size={16} />
+                                                                </button>
+
+                                                                <button
+                                                                    onClick={() => toggleAccount(t._id, !t.isActive)}
+                                                                    className="flex items-center gap-1 bg-black text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-800 transition"
+                                                                >
+                                                                    {t.isActive ? <Ban size={16} /> : <RefreshCcw size={16} />}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* RIGHT SECTION */}
+                                                        <div className="md:col-span-2 space-y-6">
+                                                            <div>
+                                                                <h3 className="text-gray-700 font-semibold mb-2">
+                                                                    Personal Information
+                                                                </h3>
+
+                                                                <div className="grid sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Email:</span>{" "}
+                                                                        {t.email}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Experience:</span>{" "}
+                                                                        {t.experience ? `${t.experience} years` : "N/A"}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Qualification:</span>{" "}
+                                                                        {t.qualifications || "N/A"}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Specialization:</span>{" "}
+                                                                        {Array.isArray(t.specialization)
+                                                                            ? t.specialization.join(", ")
+                                                                            : t.specialization || "N/A"}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Gender:</span>{" "}
+                                                                        {t.gender || "N/A"}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Phone:</span>{" "}
+                                                                        {t.phone || "N/A"}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span className="font-medium text-gray-800">Languages:</span>{" "}
+                                                                        {Array.isArray(t.languages)
+                                                                            ? t.languages.join(", ")
+                                                                            : t.languages || "N/A"}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            {t.bio && (
+                                                                <div>
+                                                                    <h3 className="text-gray-700 font-semibold mb-2">About</h3>
+                                                                    <p className="text-gray-600 text-sm leading-relaxed">{t.bio}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {/* NOTES */}
+                                                            <div>
+                                                                <h3 className="text-gray-700 font-semibold mb-2">Admin Notes</h3>
+                                                                <textarea
+                                                                    className="w-full border p-3 rounded-lg mt-2 shadow-sm"
+                                                                    rows="3"
+                                                                    placeholder="Write notes..."
+                                                                    value={notes}
+                                                                    onChange={(e) => setNotes(e.target.value)}
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
                                         )}
+
                                     </React.Fragment>
                                 );
                             })}
@@ -489,48 +323,139 @@ function ManageTherapists() {
                                 )}
                             </div>
 
+
+
+
+
                             {expanded === t._id && (
-                                <div className="mt-3 space-y-3">
-                                    <p><b>Status:</b> {statusBadge(t.isApproved)}</p>
-                                    <p><b>Profession:</b> {t.profession || "—"}</p>
+                                <div className="mt-4 bg-white rounded-2xl shadow-md p-5 space-y-6 border">
 
-                                    <textarea
-                                        rows="3"
-                                        className="w-full border p-3 rounded-lg"
-                                        placeholder="Admin Notes..."
-                                        value={notes}
-                                        onChange={(e) => setNotes(e.target.value)}
-                                    />
+                                    {/* PROFILE IMAGE + BASIC INFO */}
+                                    <div className="flex flex-col items-center text-center space-y-3">
+                                        <img
+                                            src={t.profileImage || "/default.jpg"}
+                                            alt="profile"
+                                            className="w-28 h-28 rounded-full object-cover border-4 border-teal-200"
+                                        />
 
-                                    <div className="flex gap-2">
+                                        <h2 className="text-lg font-semibold text-gray-800">
+                                            {t.name}
+                                        </h2>
+
+                                        <p className="text-sm text-gray-500">
+                                            {t.profession || "N/A"}
+                                        </p>
+
+                                        {t.certificate && (
+                                            <a
+                                                href={t.certificate}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-1 text-sm text-teal-600 hover:text-teal-700 font-medium"
+                                            >
+                                                View Certificate
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    {/* PERSONAL INFO */}
+                                    <div>
+                                        <h3 className="text-gray-700 font-semibold mb-2">
+                                            Personal Information
+                                        </h3>
+
+                                        <div className="grid grid-cols-1 gap-2 text-sm text-gray-600">
+                                            <p>
+                                                <span className="font-medium text-gray-800">Email:</span>{" "}
+                                                {t.email}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium text-gray-800">Experience:</span>{" "}
+                                                {t.experience ? `${t.experience} years` : "N/A"}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium text-gray-800">Qualification:</span>{" "}
+                                                {t.qualifications || "N/A"}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium text-gray-800">Specialization:</span>{" "}
+                                                {Array.isArray(t.specialization)
+                                                    ? t.specialization.join(", ")
+                                                    : t.specialization || "N/A"}
+                                            </p>
+                                            <p>
+                                                <span className="font-medium text-gray-800">Gender:</span>{" "}
+                                                {t.gender || "N/A"}
+                                            </p>
+
+                                            <p>
+                                                <span className="font-medium text-gray-800">Phone:</span>{" "}
+                                                {t.phone || "N/A"}
+                                            </p>
+
+                                            <p>
+                                                <span className="font-medium text-gray-800">Languages:</span>{" "}
+                                                {Array.isArray(t.languages)
+                                                    ? t.languages.join(", ")
+                                                    : t.languages || "N/A"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* BIO */}
+                                    {t.bio && (
+                                        <div>
+                                            <h3 className="text-gray-700 font-semibold mb-2">About</h3>
+                                            <p className="text-gray-600 text-sm leading-relaxed">
+                                                {t.bio}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* NOTES */}
+                                    <div>
+                                        <h3 className="text-gray-700 font-semibold mb-2">Admin Notes</h3>
+                                        <textarea
+                                            rows="3"
+                                            className="w-full border p-3 rounded-lg shadow-sm"
+                                            placeholder="Write notes..."
+                                            value={notes}
+                                            onChange={(e) => setNotes(e.target.value)}
+                                        />
+                                    </div>
+
+                                    {/* ACTION BUTTONS */}
+                                    <div className="grid grid-cols-3 gap-2 pt-2">
                                         <button
                                             onClick={() => updateStatus(t._id, "approved")}
-                                            className="flex-1 bg-green-600 text-white rounded-lg py-2"
+                                            className="bg-green-600 text-white rounded-lg py-2 text-sm"
                                         >
                                             Approve
                                         </button>
+
                                         <button
                                             onClick={() => updateStatus(t._id, "rejected")}
-                                            className="flex-1 bg-red-600 text-white rounded-lg py-2"
+                                            className="bg-red-600 text-white rounded-lg py-2 text-sm"
                                         >
                                             Reject
                                         </button>
-                                    </div>
 
-                                    <button
-                                        onClick={() => toggleAccount(t._id, !t.isActive)}
-                                        className="w-full bg-black text-white rounded-lg py-2 mt-1"
-                                    >
-                                        {t.isActive ? "Disable Account" : "Enable Account"}
-                                    </button>
+                                        <button
+                                            onClick={() => toggleAccount(t._id, !t.isActive)}
+                                            className="bg-black text-white rounded-lg py-2 text-sm"
+                                        >
+                                            {t.isActive ? "Disable" : "Enable"}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
+
                         </div>
                     ))}
                 </div>
             </div>
         </AdminLayout>
-        // </div>
+
     );
 }
 

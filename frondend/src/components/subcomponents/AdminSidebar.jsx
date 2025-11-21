@@ -108,10 +108,10 @@ export default function AdminSidebar({ isOpen, onClose }) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r shadow-sm 
-        transform transition-transform duration-300
+        className={`top-0 left-0 z-50 h-screen w-64 bg-white border-r shadow-sm 
+        md:sticky md:translate-x-0 transform transition-transform duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-        md:translate-x-0 md:static`}
+         md:top-0 md:translate-x-0 md:static`}
       >
         <div className="p-4 flex items-center justify-between md:justify-center border-b">
           <span className="font-bold text-teal-600 text-xl">Admin Panel</span>
