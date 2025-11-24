@@ -14,6 +14,11 @@ router.route('/verify-otp').post(rh.verifyOtp);
 router.route('/resend-otp').post(rh.resendOTP);
 router.route('/user-login').post(rh.login);
 
+router.route('/profile').get(Auth(['client']), rh.getProfile);
+router.route('/edit-profile').put(Auth(['client']),upload.single("profileImage"), rh.updateProfile);
+router.route('/delete-profile').delete(Auth(['client']), rh.deleteAccount);
+router.route('/fetchtherapists').get(Auth(['client']),rh.getApprovedTherapists);
+
 // therapist
 router.route("/therapist-signup").post(tp.signup);
 router.route('/therapist-verify-otp').post(tp.verifyOtp);

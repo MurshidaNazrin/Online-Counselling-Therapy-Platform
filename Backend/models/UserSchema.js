@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema({
 
     // profile info
     gender: { type: String, enum: ["male", "female", "other"], default: null, },
+    age: {type: Number, min: [12, "Age cannot be less than 12"], max: [100, "Age cannot exceed 100"],},
     phone: { type: String, default: null },
     profileImage: { type: String, default: null },
 

@@ -15,6 +15,8 @@ export default function Auth(allowedRoles = []) {
             const token = key.split(" ")[1];
             const auth = verify(token, process.env.JWT_TOKEN);
             req.user = auth;
+            // console.log("Decoded token:", auth);
+
 
             // Role check
             if (allowedRoles.length && !allowedRoles.includes(auth.role)) {

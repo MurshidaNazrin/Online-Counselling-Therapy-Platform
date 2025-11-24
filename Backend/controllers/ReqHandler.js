@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/UserSchema.js";
+import Therapist from "../models/TherapistSchema.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 
@@ -16,7 +17,7 @@ export async function signup(req, res) {
     // password strength validation
     const strongPswd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-     if (!strongPswd.test(password)) {
+    if (!strongPswd.test(password)) {
       return res.status(400).json({
         message:
           "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
@@ -114,43 +115,144 @@ export async function resendOTP(req, res) {
     console.error("Resend OTP Error:", err);
     res.status(500).json({ message: "Server error" });
   }
-} 
+}
 
 
 // ====================Login===========================
-export async function login(req,res){
-  try{
-    const {email,password} = req.body;
+export async function login(req, res) {
+  try {
+    const { email, password } = req.body;
 
-    if(!email || !password) {
-      return res.status(400).json({message: "Please enter email and password"});
+    if (!email || !password) {
+      return res.status(400).json({ message: "Please enter email and password" });
     }
 
     // find user
-    const user = await User.findOne({email});
-    if(!user){
-      return res.status(400).json({message:"Invalid email or password"});
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // check if verified
-    if(!user.isVerified){
-      return res.status(403).json({message: "Email not verified.Please verify Your email before login"});
+    if (!user.isVerified) {
+      return res.status(403).json({ message: "Email not verified.Please verify Your email before login" });
     }
 
     // compare password
-    const isMatch = await bcrypt.compare(password,user.password);
-    if(!isMatch){
-      return res.status(400).json({message:"Invalid email or password"});
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     // generate JWT
-    const token = jwt.sign({clientId: user._id, role:user.role}, process.env.JWT_TOKEN,{ expiresIn: "24h"});
+    const token = jwt.sign({ clientId: user._id, role: user.role }, process.env.JWT_TOKEN, { expiresIn: "24h" });
     console.log(token);
-    
 
-    return res.status(200).json({message:"Login successful",token,user})
-  }catch(err){
-    console.error("Login Error:",err);
-    res.status(500).json({message:"Server error"});
+
+    return res.status(200).json({ message: "Login successful", token, user })
+  } catch (err) {
+    console.error("Login Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+// fetch client profile
+export async function getProfile(req, res) {
+  try {
+    const clientId = req.user.clientId;
+
+    const user = await User.findById(clientId).select("-password -otp -otpExpires");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Profile fetched", user });
+  } catch (err) {
+    console.error("Get Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// update profile
+export async function updateProfile(req, res) {
+  try {
+    const clientId = req.user.clientId;
+    const { name, gender, phone } = req.body;
+
+    const updateData = { name, gender, phone };
+
+    if (req.file) {
+      updateData.profileImage = `/uploads/profileImages/${req.file.filename}`
+    }
+
+    const user = await User.findByIdAndUpdate(clientId, updateData, { new: true }).select("-password -otp -otpExpires");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Profile updated", user });
+  } catch (err) {
+    console.error("Update Profile error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+// Delete Account
+export async function deleteAccount(req, res) {
+  try {
+    const clientId = req.user.clientId;
+
+    const user = await User.findByIdAndDelete(clientId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (err) {
+    console.error("Delete Account Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+
+// ========get All therapists============
+export async function getApprovedTherapists(req, res) {
+  try {
+    const therapists = await Therapist.find({
+      isApproved: "approved",
+      isVerified: true,
+      isActive: true,
+    }).select("-password -otp -otpExpires -adminNotes");
+
+    
+    if (!therapists.length) {
+      return res.status(200).json({
+        success: true,
+        message: "No therapists available",
+        therapists: [],
+      });
+    }
+    
+    const host = `${req.protocol}://${req.get("host")}`;
+
+    const data = therapists.map(t => ({
+      ...t._doc,
+      profileImage: t.profileImage
+        ? (t.profileImage.startsWith("http") ? t.profileImage : `${host}${t.profileImage}`)
+        : null,
+      certificate: t.certificate
+        ? (t.certificate.startsWith("http") ? t.certificate : `${host}${t.certificate}`)
+        : null,
+    }));
+
+    return res.status(200).json({ messagee: "Approved therapists fetched", therapists: data });
+  } catch (err) {
+    console.error("Get Approved Therapists Error:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 }
