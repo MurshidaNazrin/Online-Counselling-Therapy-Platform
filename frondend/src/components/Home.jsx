@@ -156,21 +156,6 @@ function Home() {
             />
           </section>
 
-
-          {/*  therapists */}
-          {/* <section className='mt-10'>
-              <h3 className="text-xl font-semibold mb-4">Therapists</h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                     {therapists.length === 0 ? (
-            <p className="text-gray-500">No therapists available.</p>
-        ) : (
-            therapists.map((t) => <Therapistcard key={t._id} therapist={t} />)
-        )}
-              
-              </div>
-            </section> */}
-
           <section className='mt-10'>
             <h3 className="text-xl font-semibold mb-4">Therapists</h3>
 

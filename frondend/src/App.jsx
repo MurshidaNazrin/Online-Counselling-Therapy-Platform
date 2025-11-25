@@ -18,6 +18,7 @@ import TpstApplication from './components/subcomponents/TpstProfile';
 import TpstProfile from './components/subcomponents/TpstProfile';
 import TpstFullProfile from './components/therapists/TpstFullProfile';
 // import ApplicationStatus from './components/therapists/ApplicationStatus';
+import TpstAvailability from './components/therapists/TherapistAvailability';
 
 import PrivateRoute from './components/subcomponents/PrivateRoute';
 import AdminLogin from './components/AdminLogin';
@@ -67,6 +68,7 @@ function App() {
           <Route path='/application' element={<TpstApplication />} />
           <Route path='/profile-setup' element={<TpstProfile />} />
           <Route path='/therapist-profile' element={<TpstFullProfile />} />
+          <Route path='/therapist-availability' element={<TpstAvailability />} />
           {/* <Route path='/application-status' element={<ApplicationStatus />} /> */}
 
           {/* ======SuperAdmin Routes======== */}

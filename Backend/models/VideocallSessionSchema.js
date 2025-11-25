@@ -26,11 +26,23 @@ const videoSessionSchema = new mongoose.Schema(
             required: true,
         },
 
+          callType: {
+            type: String,
+            enum: ["video", "audio", "screen-share"],
+            default: "video",
+        },
+
         callStatus: {
             type: String,
             enum: ["initiated", "connected", "ended", "missed"],
             default: "initiated",
         },
+
+      
+        isActive: { type: Boolean, default: true },
+
+        token: { type: String }, // temporary auth token for joining the room
+
 
         startedAt: {
             type: Date,
@@ -46,11 +58,13 @@ const videoSessionSchema = new mongoose.Schema(
         },
 
         recordingUrl: {
-            type: String, 
+            type: String,
         },
     },
-    { timestamps: true}
+    { timestamps: true }
 );
+
+videoSessionSchema.index({ therapistId: 1, clientId: 1 });
 
 export default mongoose.model("VideoSession", videoSessionSchema);
 

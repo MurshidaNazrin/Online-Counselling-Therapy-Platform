@@ -36,11 +36,11 @@ const TherapistSchema = new mongoose.Schema({
     isApproved: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" }, //admin sets true after recieving certificate
     adminNotes: {type: String},
     isActive: {type: Boolean, default: true},
-    // availability: [
-    //     {
-    //         day: String, slots:[String],
-    //     },
-    // ],
+    availability: [
+        {
+            day: { type: String }, slots: [{start: String, end: String}]
+        }
+    ],
 }, { timestamps: true });
 
 

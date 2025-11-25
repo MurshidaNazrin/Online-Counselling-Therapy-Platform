@@ -164,7 +164,7 @@ export async function login(req, res) {
 export async function therapistProfile(req, res) {
   try {
     const therapistId = req.user?.therapistId;
-     if (!therapistId) return res.status(401).json({ message: "Unauthorized" });
+    if (!therapistId) return res.status(401).json({ message: "Unauthorized" });
     console.log(therapistId);
 
     const {
@@ -261,24 +261,154 @@ export async function deleteAccount(req, res) {
 }
 
 // =============profile verification status========================
-export async function getTherapistStatus(req,res){
-  try{
+export async function getTherapistStatus(req, res) {
+  try {
     const therapistId = req.user.therapistId;
 
     const data = await Therapist.findById(therapistId).select("isApproved adminNotes createdAt updatedAt");
 
-    if(!data){
-      return res.status(404).json({error: "Therapist not found"});
+    if (!data) {
+      return res.status(404).json({ error: "Therapist not found" });
     }
-    
+
     res.status(200).json({
       status: data.isApproved,
       adminNotes: data.adminNotes || "",
       submittedAt: data.createdAt,
       reviewedAt: data.updatedAt,
     });
-  }catch(err){
+  } catch (err) {
     console.error("Error fetching therapist status:", err);
     res.status(500).json({ error: "Failed to fetch status" });
   }
 }
+
+
+// ================Set Availability========================
+export async function setAvailability(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+
+    const { availability } = req.body;
+
+    if (!availability || !Array.isArray(availability)) {
+      return res.status(400).json({ message: "Invalid availability data" });
+    }
+
+    // Example availability = [
+    //   { day: "Monday", slots: [{ start: "09:00", end: "12:00" }] },
+    //   { day: "Wednesday", slots: [{ start: "14:00", end: "17:00" }] }
+    // ]
+
+    const therapist = await Therapist.findById(therapistId);
+
+    if (!therapist) {
+      return res.status(404).json({ message: "Therapist not found" });
+    }
+
+    therapist.availability = availability;
+
+    await therapist.save();
+
+    return res.status(200).json({
+      message: "Availability updated successfully",
+      availability: therapist.availability
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" })
+  }
+}
+
+
+// =================get Availability==============
+export async function getMyAvailability(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+
+    const therapist = await Therapist.findById(therapistId).select("availability");
+
+    if (!therapist) {
+      return res.status(404).json({ message: "Therapist not found" });
+    }
+
+    res.status(200).json({ availability: therapist.availability || [] });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+// =================Update specific slot===================
+export async function updateSlot(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+    const { day, oldStart, oldEnd, newStart, newEnd } = req.body;
+
+    if (!day || !oldStart || !oldEnd || !newStart || !newEnd) {
+      return res.status(400).json({ message: "Missing slot details" });
+    }
+
+    const therapist = await Therapist.findById(therapistId);
+    if (!therapist) return res.status(404).json({ message: "Therapist not found" });
+
+    const dayEntry = therapist.availability.find(a => a.day === day);
+    if (!dayEntry) return res.status(404).json({ message: "Day not found" });
+
+    const slot = dayEntry.slots.find(s => s.start === oldStart && s.end === oldEnd);
+    if (!slot) return res.status(404).json({ message: "Slot not found" });
+
+    // Update
+    slot.start = newStart;
+    slot.end = newEnd;
+
+    await therapist.save();
+
+    res.json({
+      message: "Slot updated successfully",
+      availability: therapist.availability,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
+
+// ===============Delete Slot ==================
+export async function deleteSlot(req, res) {
+  try {
+    const therapistId = req.user.therapistId;
+    const { day, start, end } = req.body;
+
+    if (!day || !start || !end) {
+      return res.status(400).json({ message: "Missing slot details" });
+    }
+
+    const therapist = await Therapist.findById(therapistId);
+    if (!therapist) return res.status(404).json({ message: "Therapist not found" });
+
+    const dayEntry = therapist.availability.find(a => a.day === day);
+    if (!dayEntry) return res.status(404).json({ message: "Day not found" });
+
+    dayEntry.slots = dayEntry.slots.filter(
+      s => !(s.start === start && s.end === end)
+    );
+
+    await therapist.save();
+
+    res.json({
+      message: "Slot deleted successfully",
+      availability: therapist.availability,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+

@@ -30,6 +30,10 @@ router.route('/therapist-profile').get(Auth(["therapist"]), tp.getTherapistProfi
 router.route('/therapist-deleteprofile').delete(Auth(["therapist"]), tp.deleteAccount);
 router.route('/therapist-status').get(Auth(["therapist"]), tp.getTherapistStatus);
 
+router.route('/set-session').post(Auth(["therapist"]), tp.setAvailability);
+router.route('/get-session').get(Auth(["therapist"]), tp.getMyAvailability);
+router.route('/update-session').put(Auth(["therapist"]), tp.updateSlot);
+router.route('/delete-slot').delete(Auth(["therapist"]), tp.deleteSlot);
 
 // super Admin
 router.route('/admin-login').post(ad.loginAdmin);

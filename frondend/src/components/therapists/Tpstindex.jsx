@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TpstNavbar from './TpstNavbar';
 import TpstSidebar from './TpstSidebar';
-
 import TpstProfile from '../subcomponents/TpstProfile';
 
 function Tpstindex() { 
