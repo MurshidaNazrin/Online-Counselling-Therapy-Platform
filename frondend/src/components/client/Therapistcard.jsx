@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 function Therapistcard({ therapist }) {
   const navigate = useNavigate();
 
-  const goTpProfile = () => navigate('/');
+  const goTpProfile = () => navigate(`/view-therapist/${therapist._id}`);
   const goToBooking = (e) => {
     e.stopPropagation();
-    navigate();
+    navigate(`/booking/${therapist._id}`);
   };
 
   const formatSpecialization = (list = []) => list.join("•");

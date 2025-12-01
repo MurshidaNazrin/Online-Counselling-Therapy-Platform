@@ -18,6 +18,8 @@ router.route('/profile').get(Auth(['client']), rh.getProfile);
 router.route('/edit-profile').put(Auth(['client']),upload.single("profileImage"), rh.updateProfile);
 router.route('/delete-profile').delete(Auth(['client']), rh.deleteAccount);
 router.route('/fetchtherapists').get(Auth(['client']),rh.getApprovedTherapists);
+router.route('/view-therapist/:therapistId').get(Auth(['client']),rh.getTherapistProfile);
+
 
 // therapist
 router.route("/therapist-signup").post(tp.signup);

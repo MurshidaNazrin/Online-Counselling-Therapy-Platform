@@ -20,8 +20,9 @@ function TpstSidebar({ onToggle }) {
   }, []);
 
   const toggleSidebar = () => {
+    const newState = !isOpen;
     setIsOpen(newState);
-    onToggle(newState);
+    if (onToggle) onToggle(newState);
   };
 
   // ============Logout+++===============
@@ -47,7 +48,7 @@ function TpstSidebar({ onToggle }) {
       {/* Top */}
       <div>
         <div className="flex items-center justify-between mb-8">
-          {isOpen && !isMobile && (<h1 className="text-xl font-bold text-teal-600">TheraConnect</h1>)}
+          {isOpen && !isMobile && (<h1 className="text-xl font-bold text-teal-600">MindLink</h1>)}
           <button onClick={toggleSidebar}>
             {isMobile ? (
               <X className="text-teal-600" size={26} />
@@ -60,7 +61,7 @@ function TpstSidebar({ onToggle }) {
         {/* Menu Links */}
         <ul className="space-y-4 text-gray-700 font-medium">
           <li>
-            <Link to="/therapist-dashboard" className="flex items-center space-x-3 hover:text-teal-600">
+            <Link to="/therapist-home" className="flex items-center space-x-3 hover:text-teal-600">
               <LayoutDashboard size={20} />
               {isOpen && <span>Dashboard</span>}
             </Link>

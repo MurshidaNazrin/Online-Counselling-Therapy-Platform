@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import Therapist from "../models/TherapistSchema.js";
+import Availability from "../models/AvailabilitySchema.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
 
@@ -288,31 +289,39 @@ export async function getTherapistStatus(req, res) {
 export async function setAvailability(req, res) {
   try {
     const therapistId = req.user.therapistId;
+    const { date, slots } = req.body;
 
-    const { availability } = req.body;
-
-    if (!availability || !Array.isArray(availability)) {
+    if (!date || !Array.isArray(slots) || slots.length === 0) {
       return res.status(400).json({ message: "Invalid availability data" });
     }
 
-    // Example availability = [
-    //   { day: "Monday", slots: [{ start: "09:00", end: "12:00" }] },
-    //   { day: "Wednesday", slots: [{ start: "14:00", end: "17:00" }] }
-    // ]
+    const today = new Date().toISOString().split("T")[0];
 
-    const therapist = await Therapist.findById(therapistId);
-
-    if (!therapist) {
-      return res.status(404).json({ message: "Therapist not found" });
+    if (req.body.date < today) {
+      return res.status(400).json({ message: "Cannot add availability for past dates" });
     }
 
-    therapist.availability = availability;
 
-    await therapist.save();
+    // find existing record for same therapist + date
+    let availability = await Availability.findOne({ therapistId, date });
+
+    if (availability) {
+      // ADD new slots without removing old ones
+      availability.slots.push(...slots);
+    } else {
+      // create new record
+      availability = new Availability({
+        therapistId,
+        date,
+        slots
+      });
+    }
+
+    await availability.save();
 
     return res.status(200).json({
-      message: "Availability updated successfully",
-      availability: therapist.availability
+      message: "Availability updated",
+      availability
     });
 
   } catch (err) {
@@ -327,13 +336,9 @@ export async function getMyAvailability(req, res) {
   try {
     const therapistId = req.user.therapistId;
 
-    const therapist = await Therapist.findById(therapistId).select("availability");
+    const availability = await Availability.find({ therapistId });
 
-    if (!therapist) {
-      return res.status(404).json({ message: "Therapist not found" });
-    }
-
-    res.status(200).json({ availability: therapist.availability || [] });
+    res.status(200).json({ availability });
 
   } catch (err) {
     console.error(err);
@@ -383,32 +388,35 @@ export async function updateSlot(req, res) {
 export async function deleteSlot(req, res) {
   try {
     const therapistId = req.user.therapistId;
-    const { day, start, end } = req.body;
+    const { day, slotId } = req.body;
 
-    if (!day || !start || !end) {
+    if (!day || !slotId) {
       return res.status(400).json({ message: "Missing slot details" });
     }
 
-    const therapist = await Therapist.findById(therapistId);
-    if (!therapist) return res.status(404).json({ message: "Therapist not found" });
+    const availability = await Availability.findOne({therapistId, date: day});
+    if (!availability) return res.status(404).json({ message: "No availability found for this date" });
 
-    const dayEntry = therapist.availability.find(a => a.day === day);
-    if (!dayEntry) return res.status(404).json({ message: "Day not found" });
+    const originalLength = availability.slots.length;
+    availability.slots = availability.slots.filter(s => s._id.toString() !== slotId);
 
-    dayEntry.slots = dayEntry.slots.filter(
-      s => !(s.start === start && s.end === end)
-    );
+    if(availability.slots.length === originalLength) {
+      return res.status(404).json({ message: "Slot not found"});
+    }
 
-    await therapist.save();
+    // if no slots left, delete entire document
+    if(availability.slots.length === 0){
+      await Availability.findByIdAndDelete(availability._id);
+      return res.status(200).json({ message: "Slot deleted and day removed" });
+    }
 
-    res.json({
-      message: "Slot deleted successfully",
-      availability: therapist.availability,
-    });
+    await availability.save();
+
+    res.status(200).json({ message: "Slot deleted", availability})
+
 
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Server error" });
   }
 }
-

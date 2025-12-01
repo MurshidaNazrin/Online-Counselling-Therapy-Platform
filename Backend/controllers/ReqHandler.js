@@ -256,3 +256,47 @@ export async function getApprovedTherapists(req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 }
+
+// ===========view Therapist Profile===========
+export async function getTherapistProfile(req, res) {
+  try{
+    const { therapistId } = req.params;
+
+    if(!therapistId || therapistId.length !== 24) {
+      return res.status(400).json({ message: "Invalid therapist ID"});
+    }
+
+    const therapist = await Therapist.findOne({
+      _id: therapistId,
+      isApproved: "approved",
+      isVerified: true,
+      isActive: true,
+    }).select("-password -otp -otpExpires -adminNotes");
+
+    if(!therapist) {
+      return res.status(404).json({ message: "Therapist not found or not available"});
+    }
+
+    
+    const host = `${req.protocol}://${req.get("host")}`;
+
+    const data = {
+      ...therapist._doc,
+      profileImage: therapist.profileImage
+        ? therapist.profileImage.startsWith("http")
+          ? therapist.profileImage
+          : `${host}${therapist.profileImage}`
+        : null,
+    };
+    
+    return res.status(200).json({ success: true, therapist: data,});
+
+
+  }catch(err){
+     console.error("Error fetching therapist profile:", err);
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err.message
+    });
+  }
+} 

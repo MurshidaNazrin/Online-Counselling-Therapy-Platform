@@ -9,6 +9,7 @@ import Signup from "./components/Signup";
 import OTPverification from './components/OTPverification';
 import Home from './components/Home';
 import Profile from './components/client/Profile';
+import ViewTpstProfile from './components/client/ViewTpstProfile';
 
 import TpstLogin from './components/TpstLogin';
 import TpstSignup from './components/TpstSignup';
@@ -59,12 +60,13 @@ function App() {
           <Route path='/verify-otp' element={<OTPverification />} />
           <Route path='/home' element={<Home />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='/view-therapist/:therapistId' element={<ViewTpstProfile />} />
 
         {/* =======Therapist Routes============ */}
           <Route path='/therapist-login' element={<TpstLogin />} />
           <Route path='/therapist-signup' element={<TpstSignup />} />
           <Route path='/therapist-otp' element={<TpstOTP />} />
-          <Route path='/therapist-Home' element={<Tpstindex />} />
+          <Route path='/therapist-home' element={<Tpstindex />} />
           <Route path='/application' element={<TpstApplication />} />
           <Route path='/profile-setup' element={<TpstProfile />} />
           <Route path='/therapist-profile' element={<TpstFullProfile />} />
